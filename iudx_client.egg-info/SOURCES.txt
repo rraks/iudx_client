@@ -1,0 +1,9 @@
+setup.py
+iudx_client/__init__.py
+iudx_client/client.py
+iudx_client.egg-info/PKG-INFO
+iudx_client.egg-info/SOURCES.txt
+iudx_client.egg-info/dependency_links.txt
+iudx_client.egg-info/not-zip-safe
+iudx_client.egg-info/top_level.txt
+test/test.py
