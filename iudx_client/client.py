@@ -8,10 +8,15 @@ import multiprocessing
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+
+
 def getData(c):
-    '''
-        HTTP get on latest resource data
-    '''
+    ''' HTTP get on latest resource data '''
+    return {"id":c["id"], "data":requests.get(c["latestResourceData"], verify=False).json()}
+
+def getHistoric(c, startTime, endTime):
+    ''' HTTP get on latest resource data '''
+    NAME  = c["NAME"]
     return {"id":c["id"], "data":requests.get(c["latestResourceData"], verify=False).json()}
 
 class Cat:
@@ -65,6 +70,14 @@ class Cat:
         ''' Get latest data for all items that are part of an array '''
         pool = multiprocessing.Pool(processes=3)
         pool_outputs = pool.map(getData, items)
+        pool.close()
+        pool.join()
+        return pool_outputs
+
+    def getHistoricDataFromItems(self, items, startTime, endTime):
+        ''' Get historic data for the items between the timestamps '''
+        pool = multiprocessing.Pool(processes=3)
+        pool_outputs = pool.map(getHistoric, items, startTime, endTime)
         pool.close()
         pool.join()
         return pool_outputs
