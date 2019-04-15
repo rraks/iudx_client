@@ -9,7 +9,7 @@ def main():
     #items = c.getItemsByTags(["flood alert"], filters=None)
 
     ''' or  apply a geo search '''
-    items = c.getItems(attributes={"tags":["flood sensor"]},location={"lat":18.528311,"long":73.874537,"radius":3}, filters=None)
+    items = c.getItems(attributes={"tags":["flood alert"]},location={"lat":18.528311,"long":73.874537,"radius":3}, filters=None)
 
     ''' Get data for those items '''
     data = c.getLatestDataFromItems(items)
