@@ -9,15 +9,40 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+baseURL = "https://pune.iudx.org.in/api/1.0.0/resource"
 
-def getData(c):
-    ''' HTTP get on latest resource data '''
-    return {"id":c["id"], "data":requests.get(c["latestResourceData"], verify=False).json()}
+headers = {"apikey":"vasanth@rbccps", "id":"vasanth"}
 
-def getHistoric(c, startTime, endTime):
+def getData(i):
     ''' HTTP get on latest resource data '''
-    NAME  = c["NAME"]
-    return {"id":c["id"], "data":requests.get(c["latestResourceData"], verify=False).json()}
+    return {"id":i["id"], "data":requests.get(i["latestResourceData"], verify=False).json()}
+
+
+#def getHistoric(i):
+#    ''' HTTP get on latest resource data '''
+#    startTime = i["startTime"].replace(" ", "%20")
+#    endTime = i["endTime"].replace(" ", "%20")
+#    c = i["item"]
+#    NAME  = c["NAME"].replace(" ", "%20")
+#    iD = c["id"]
+#    openAPIObj = requests.get(c["accessInformation"][0]["accessSchema"], verify=False).json()
+#    apis = openAPIObj["paths"].keys()
+#    queryTemplate = ""
+#    for api in apis:
+#        if "query" in api:
+#            queryTemplate = api
+#    if queryTemplate is not "":
+#        queryURL = baseURL + queryTemplate.replace("{NAME}", NAME).replace("{startTime}", startTime).replace("{endTime}",endTime)
+#    data = []
+#    try:
+#        print(queryURL)
+#        d = {"id":iD, "data":requests.get(queryURL, headers=headers,verify=False).json()}
+#        print(d)
+#    except Exception as e:
+#        print(e)
+#    return data
+    
+
 
 class Cat:
     '''
@@ -62,23 +87,33 @@ class Cat:
         ''' Get all items based on povided parameters '''
         items = []
         url = self.generateLink(attributes=attributes, filters=filters, location=location) 
-        print(url)
         return requests.get(url,verify=False).json()
 
 
     def getLatestDataFromItems(self, items) :
         ''' Get latest data for all items that are part of an array '''
-        pool = multiprocessing.Pool(processes=3)
-        pool_outputs = pool.map(getData, items)
-        pool.close()
-        pool.join()
+        pool_outputs = []
+        try:
+            pool = multiprocessing.Pool(processes=3)
+            pool_outputs = pool.map(getData, items)
+            pool.close()
+            pool.join()
+        except Exception as e:
+            print(e)
+
         return pool_outputs
 
-    def getHistoricDataFromItems(self, items, startTime, endTime):
-        ''' Get historic data for the items between the timestamps '''
-        pool = multiprocessing.Pool(processes=3)
-        pool_outputs = pool.map(getHistoric, items, startTime, endTime)
-        pool.close()
-        pool.join()
-        return pool_outputs
+#    def getHistoricDataFromItems(self, items, startTime, endTime):
+#        ''' Get historic data for the items between the timestamps '''
+#        pool_outputs = []
+#        try:
+#            pool = multiprocessing.Pool(processes=3)
+#            pool_outputs = pool.map(getHistoric, [ {"item": i, "startTime":startTime, "endTime":endTime} for i in items])
+#            pool.close()
+#            pool.join()
+#        except Exception as e:
+#            print(e)
+#        return pool_outputs
+
+
 
